@@ -1,0 +1,20 @@
+{% extends "base.html" %} 
+{% block content %} 
+{% load staticfiles %}
+
+<div class="container">
+    <div class="row bg-success text-white">
+        <div class="col-12">
+        <h1 class="text-center">J B RICHARDSON</h1>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+     {% for obj in products %}
+         {{ obj.product_name }}
+     {% endfor %}
+</div>
+
+
+{% endblock content %}
