@@ -15,7 +15,7 @@ class CustomerProfile(models.Model):
     addressline2 = models.CharField(max_length=200, default='', blank=True)
     postcode = models.CharField(max_length=10, default='', blank=True)
     account_created_date = models.DateTimeField(auto_now_add=True, blank=True)
-    products = models.ManyToManyField('Product', default='')
+    products = models.ManyToManyField('Product', default='', blank=True)
 
     # TODO: Delivery address and invoicing address should be seprated
     def __str__(self):

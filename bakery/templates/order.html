@@ -1,0 +1,54 @@
+{% extends "base.html" %} {% block content %}
+<div class="container">
+  <table id="example" class="display" style="width:100%">
+    <thead>
+      <tr>
+        <th>Product Name</th>
+        <th>Quantity</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for p in products %}
+      <tr>
+        <td class="productName">{{ p.product_name }}</td>
+        <td>
+          <input
+            class="productQuantity"
+            type="text"
+            id="row-1-age"
+            name="row-1-age"
+            value="0"
+          />
+        </td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+  <button id="placeOrder" type="button" class="btn btn-success">
+    PLACE ORDER
+  </button>
+  <button type="button" onClick="printThispage()" class="btn btn-secondary">
+    <i class="fas fa-print"></i> PRINT THE PAGE
+  </button>
+</div>
+
+<script>
+  function printThispage() {
+    window.print();
+  }
+  $(document).ready(function() {
+    var table = $(".productName").val();
+    console.log(table);
+
+    $("#placeOrder").click(function() {
+      var data = table.$("input, select").serialize();
+      alert(
+        "The following data would have been submitted to the server: \n\n" +
+          data.substr(0, 120) +
+          "..."
+      );
+      return false;
+    });
+  });
+</script>
+{% endblock content %}

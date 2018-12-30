@@ -4,12 +4,21 @@
 <div class="container">
 	<h1> Welcome {{ user.first_name }}!</h1>
 	<br>
-	<h4> Thank you for logging in.</h4><br>
-	<h4> Profile info:</h4><br>
-	<p>Username: {{ user }}</p>
+	<h4> My Account</h4><br>
+	<p><strong>Username: </strong>{{ user }}</p>
 	<p>First Name: {{ user.first_name }}</p>
 	<p>Last Name: {{ user.last_name }}</p>
-	<p>Email: {{ user.email }}</p>
+	{% for a in customer %}
+	<p>{{ a.customer_name }}</p>
+	<p><strong>Email:</strong>{{ a.email_address }}</p>
 	
+	<p><strong>Phone:</strong>{{ a.phone }}</p>
+	<br /><h5>Delivery Address</h5><br />
+	<p><strong>Address:</strong>{{ a.addressline1 }}</p>
+	<p>{{ a.addressline2 }}</p>
+	<p>{{ a.postcode}}</p>
+	
+
+	{% endfor %}
 </div>
 {% endblock content %}

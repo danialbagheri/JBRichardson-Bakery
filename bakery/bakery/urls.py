@@ -20,6 +20,10 @@ from django.contrib.auth import views as auth_views
 from web.views import *
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    path('login', auth_views.LoginView.as_view(template_name='login.html')),
-    url(r'^profile/$', profile, name='profile'),
+    path('account/login/',
+         auth_views.LoginView.as_view(template_name='login.html')),
+    path('account/logout/',
+         auth_views.LoginView.as_view(template_name='logout.html')),
+    url(r'^account/profile/$', profile, name='profile'),
+    url(r'^account/order/$', order, name='order')
 ]
