@@ -1,6 +1,28 @@
-{% extends "base.html" %} {% block content %}
+{% extends "base.html" %} {% load static %} {% block customstatic %}
+<!-- <link rel="stylesheet" hred="{% static "styles/datepicker.css" %}">
+<script src="{% static "js/bootstrap-datepicker.js" %}"></script>
+<script src="{% static "js/date.js" %}"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.8.0/js/bootstrap-datepicker.js"></script>
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
+<link
+  rel="stylesheet"
+  href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"
+/>
+
+{% endblock %} {% block content %}
 <div class="container">
-  <table id="example" class="display" style="width:100%">
+  <h3>Welcome to Order pad</h3>
+  <p>
+    Below you can see your regular list of items, You can browse our full
+    <a href="#">list of products</a> and let us know if you want to or remove
+    any item from this list.
+  </p>
+  <table
+    id="example"
+    class="display"
+    style="width:100%;background-color: antiquewhite; margin:10px; padding: 20px;"
+  >
     <thead>
       <tr>
         <th>Product Name</th>
@@ -24,31 +46,62 @@
       </tr>
     </tbody>
   </table>
+  <p>Purchase order number: <input type="text" /></p>
+  <div id="notification" class="alert alert-primary" role="alert"></div>
+  <p>
+    Choose the delivery date: (required)
+    <input type="text" id="datepicker" required />
+  </p>
+  <p>
+    Use the text box below to let us know if you need anything else: (example:
+    Delivery Time, Other product and etc.)
+  </p>
+  <textarea class="form-control"></textarea> <br />
   <button id="placeOrder" type="button" class="btn btn-success">
     PLACE ORDER
   </button>
   <button type="button" onClick="printThispage()" class="btn btn-secondary">
-    <i class="fas fa-print"></i> PRINT THE PAGE
+    <i class="fas fa-print"></i> PRINT THIS PAGE
   </button>
 </div>
 
+<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
   function printThispage() {
     window.print();
   }
-  $(document).ready(function() {
-    var table = $(".productName").val();
-    console.log(table);
+  let currentTime = new Date().toLocaleTimeString();
+  let hour = currentTime.substr(0, 2);
+  let note = document.getElementById("notification");
+  let earlyDate = () => {
+    if (hour > 12) {
+      return 2;
+    } else {
+      return 1;
+    }
+  };
 
-    $("#placeOrder").click(function() {
-      var data = table.$("input, select").serialize();
-      alert(
-        "The following data would have been submitted to the server: \n\n" +
-          data.substr(0, 120) +
-          "..."
-      );
-      return false;
+  window.onload = function notifyCustomer() {
+    if (hour > 12) {
+      note.innerHTML =
+        "All orders placed after 12pm, cannot be delivered by next working day!";
+    } else {
+      note.innerHTML = "Hurry up! Order before 12pm for next day delivery";
+    }
+  };
+
+  $(function() {
+    $("#datepicker").datepicker({
+      beforeShowDay: function(date) {
+        var day = date.getDay();
+        return [day != 0, ""];
+      },
+      dateFormat: "yy-mm-dd",
+      minDate: earlyDate(),
+      maxDate: "14D"
     });
   });
+  $(document).ready(function() {});
 </script>
-{% endblock content %}
+{% endblock %}
