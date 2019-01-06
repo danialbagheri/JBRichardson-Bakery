@@ -124,3 +124,10 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 
 ]
+
+
+EMAIL_USE_TLS = True
+EMAIL_HOST = 'smtp.ionos.co.uk'
+EMAIL_HOST_USER = 'orders@jbrichardson.co.uk'
+EMAIL_HOST_PASSWORD = ''
+EMAIL_PORT = 587

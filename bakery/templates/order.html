@@ -12,57 +12,77 @@
 
 {% endblock %} {% block content %}
 <div class="container">
-  <h3>Welcome to Order pad</h3>
+  <h3>Welcome to Order pad, {{ user.first_name }}</h3>
+  <!-- <div style="display:none;" id="userName">{{ user }}</div> -->
+
   <p>
     Below you can see your regular list of items, You can browse our full
     <a href="#">list of products</a> and let us know if you want to or remove
-    any item from this list.
+    any item from this list. Please note, once you place an order, an email
+    confirmation will be emailed to you, if you didn't receive the email, please
+    use our phone number to place your order.
   </p>
+  {% for i in customer %}
+  <p>Your email address is:</p>
+  <p id="email">{{ i.email_address }}</p>
+  {% endfor %} <br />
   <table
     id="example"
-    class="display"
-    style="width:100%;background-color: antiquewhite; margin:10px; padding: 20px;"
+    class="display table table-striped"
+    style="width:100%; margin:10px; padding: 20px;"
   >
-    <thead>
+    <thead class="thead-default">
       <tr>
+        <th>#</th>
         <th>Product Name</th>
         <th>Quantity</th>
       </tr>
     </thead>
     <tbody>
       {% for p in products %}
-      <tr>
+      <tr class="items">
+        <td>{{ forloop.counter }}</td>
         <td class="productName">{{ p.product_name }}</td>
         <td>
-          <input
-            class="productQuantity"
-            type="text"
-            id="row-1-age"
-            name="row-1-age"
-            value="0"
-          />
+          <input class="productQuantity" type="text" id="pquantity" value="0" />
         </td>
         {% endfor %}
       </tr>
     </tbody>
   </table>
-  <p>Purchase order number: <input type="text" /></p>
-  <div id="notification" class="alert alert-primary" role="alert"></div>
-  <p>
-    Choose the delivery date: (required)
-    <input type="text" id="datepicker" required />
-  </p>
+  <br />
+  <hr />
+  <div class="row">
+    <div class="col-6">
+      <p>Purchase order number: # <input type="text" id="orderNumber" /></p>
+      <p>
+        Choose the delivery date: (required)
+        <input type="text" id="datepicker" required />
+      </p>
+    </div>
+
+    <div class="col-6">
+      <div id="notification" class="alert alert-primary" role="alert"></div>
+    </div>
+  </div>
   <p>
     Use the text box below to let us know if you need anything else: (example:
-    Delivery Time, Other product and etc.)
+    Delivery Time, Other product(s) and etc.)
   </p>
-  <textarea class="form-control"></textarea> <br />
-  <button id="placeOrder" type="button" class="btn btn-success">
+  <textarea class="form-control" id="info"></textarea> <br />
+  <button
+    onClick="submitOrder()"
+    id="placeOrder"
+    type="button"
+    class="btn btn-success"
+  >
     PLACE ORDER
   </button>
   <button type="button" onClick="printThispage()" class="btn btn-secondary">
     <i class="fas fa-print"></i> PRINT THIS PAGE
   </button>
+  <br />
+  <div id="confirm"></div>
 </div>
 
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -85,9 +105,10 @@
   window.onload = function notifyCustomer() {
     if (hour > 12) {
       note.innerHTML =
-        "All orders placed after 12pm, cannot be delivered by next working day!";
+        "Orders placed after <strong>12pm</strong>, cannot be scheduled for next day delivery.";
     } else {
-      note.innerHTML = "Hurry up! Order before 12pm for next day delivery";
+      note.innerHTML =
+        "Hurry up! Order before <strong>12pm</strong> for next day delivery";
     }
   };
 
@@ -102,6 +123,69 @@
       maxDate: "14D"
     });
   });
+
+  // form data pickeup
+
+  let items = document.getElementsByClassName("items");
+
+  // const checkOrder = () => {
+  //   let orderList = "";
+  //   for (var i = 0; i < items.length; i++) {
+  //     orderList += items[i].childNodes[3].innerHTML;
+  //     orderList += ":   ";
+  //     orderList += items[i].childNodes[5].querySelector("input").value;
+  //     orderList += "<br />";
+  //   }
+  //   return orderList;
+  // };
+
+  // async data submission
+  const url = "/account/order/";
+
+  const submitOrder = async () => {
+    let orderList = "";
+    for (var i = 0; i < items.length; i++) {
+      orderList += items[i].childNodes[3].innerHTML;
+      orderList += ":   ";
+      orderList += items[i].childNodes[5].querySelector("input").value;
+      orderList += "-";
+    }
+    let orderNumber = document.getElementById("orderNumber").value;
+    let deliveryDate = document.getElementById("datepicker").value;
+    let info = document.getElementById("info").value;
+    let confirm = document.getElementById("confirm");
+    let email = document.getElementById("email").innerHTML;
+    const orderToPlace = orderList;
+    const data = JSON.stringify({
+      order: orderToPlace,
+      "Order Number": orderNumber,
+      "Delivery Date": deliveryDate,
+      "Extra Info": info,
+      email: email
+    });
+    console.log(data);
+    try {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json"
+        },
+        body: data
+      });
+      if (response.ok) {
+        const jsonResponse = await response.json();
+        if (jsonResponse["status"] == "ok") {
+          confirm.innerHTML =
+            '<div class="alert alert-success" "role="alert" >Your order has been placed. Thank You. If you would like to make any amendments to your order please email orders@jbrichardson.co.uk</div>';
+        } else {
+          console.log("something went wrong!");
+        }
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   $(document).ready(function() {});
 </script>
 {% endblock %}
