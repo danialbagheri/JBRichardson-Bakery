@@ -1,13 +1,25 @@
-{% extends "base.html" %}
-{% block content %}
+{% extends "base.html" %}{% load static %} {% block content %}
 <div class="container">
-	<h1>welcome</h1>
-	<p>
-		You Can login here
-	</p>
-	<form method="post">
-		{% csrf_token %}
-		{{ form.as_p }}
-		<button type="submit"> Login</button>
-	</form>
-{% endblock content %}
+  <img src="{% static "img/Logo.png" %}" class="logo"/>
+  <h5 class="center">WELCOME</h5>
+  <br />
+  <form method="post" class="central-login">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-outline-dark button-center">
+      Login
+    </button>
+  </form>
+  {% if form.errors %}
+  <div class="alert alert-dark" role="alert">
+    Your username and password didn't match. Please try again.
+  </div>
+  {% endif %} <br />
+  <p class="center">
+    Please login to place an order. <br />
+    If you don't have an account, please email us at
+    <a href="emailto:orders@jbrichardson.co.uk">orders@jbrichardson.co.uk</a>
+    <br />
+    or contact us: 0161 881 6011
+  </p>
+  {% endblock content %}
+</div>

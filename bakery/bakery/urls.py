@@ -18,12 +18,16 @@ from django.contrib import admin
 from django.urls import include, path, re_path
 from django.contrib.auth import views as auth_views
 from web.views import *
+
 urlpatterns = [
     url(r'^admin/', admin.site.urls),
-    path('account/login/',
-         auth_views.LoginView.as_view(template_name='login.html')),
-    path('account/logout/',
-         auth_views.LoginView.as_view(template_name='logout.html')),
-    url(r'^account/profile/$', profile, name='profile'),
-    url(r'^account/order/$', order, name='order')
+    url(r'^$',home),
+    url('accounts/login/',
+         auth_views.LoginView.as_view(template_name='login.html'), name="login"),
+    url('accounts/change-password/', auth_views.PasswordChangeView.as_view(template_name='change-password.html',success_url="/accounts/password_change_done/"), name="change-password"),
+    url('accounts/password_change_done/', auth_views.PasswordChangeDoneView.as_view(template_name='password_change_done.html'), name="change-password-done"),
+    url('accounts/logout/',
+         auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
+    url(r'^accounts/profile/$', profile, name='profile'),
+    url(r'^accounts/order/$', order, name='order')
 ]

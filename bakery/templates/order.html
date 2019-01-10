@@ -16,11 +16,11 @@
   <!-- <div style="display:none;" id="userName">{{ user }}</div> -->
 
   <p>
-    Below you can see your regular list of items, You can browse our full
-    <a href="#">list of products</a> and let us know if you want to or remove
-    any item from this list. Please note, once you place an order, an email
-    confirmation will be emailed to you, if you didn't receive the email, please
-    use our phone number to place your order.
+    Below you can see your regular list of items, If you don't see what you are
+    looking for contact our office and we will add the new item(s) to your order
+    pad. Please note, once you place an order, an email confirmation will be
+    emailed to you, if you didn't receive the email, please use our phone number
+    to place the order.
   </p>
   {% for i in customer %}
   <p>Your email address is:</p>
@@ -55,14 +55,17 @@
   <div class="row">
     <div class="col-6">
       <p>Purchase order number: # <input type="text" id="orderNumber" /></p>
+    </div>
+
+    <div class="col-6">
       <p>
         Choose the delivery date: (required)
         <input type="text" id="datepicker" required />
       </p>
-    </div>
-
-    <div class="col-6">
-      <div id="notification" class="alert alert-primary" role="alert"></div>
+      <div id="notification" class="alert alert-dark" role="alert">
+        "Orders placed after <strong>12am</strong>, cannot be scheduled for the
+        same day delivery."
+      </div>
     </div>
   </div>
   <p>
@@ -94,23 +97,23 @@
   let currentTime = new Date().toLocaleTimeString();
   let hour = currentTime.substr(0, 2);
   let note = document.getElementById("notification");
-  let earlyDate = () => {
-    if (hour > 12) {
-      return 2;
-    } else {
-      return 1;
-    }
-  };
+  // let earlyDate = () => {
+  //   if (hour > 12) {
+  //     return 2;
+  //   } else {
+  //     return 1;
+  //   }
+  // };
 
-  window.onload = function notifyCustomer() {
-    if (hour > 12) {
-      note.innerHTML =
-        "Orders placed after <strong>12pm</strong>, cannot be scheduled for next day delivery.";
-    } else {
-      note.innerHTML =
-        "Hurry up! Order before <strong>12pm</strong> for next day delivery";
-    }
-  };
+  // window.onload = function notifyCustomer() {
+  //   if (hour > 12) {
+  //     note.innerHTML =
+  //       "Orders placed after <strong>12pm</strong>, cannot be scheduled for next day delivery.";
+  //   } else {
+  //     note.innerHTML =
+  //       "Hurry up! Order before <strong>12pm</strong> for next day delivery";
+  //   }
+  // };
 
   $(function() {
     $("#datepicker").datepicker({
@@ -119,8 +122,8 @@
         return [day != 0, ""];
       },
       dateFormat: "yy-mm-dd",
-      minDate: earlyDate(),
-      maxDate: "14D"
+      minDate: 1,
+      maxDate: "30D"
     });
   });
 

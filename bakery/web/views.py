@@ -8,8 +8,11 @@ from django.http import HttpResponse, JsonResponse
 # Emailing libraries
 from django.core.mail import send_mail
 from django.core.mail import EmailMessage
+from django.shortcuts import redirect
 # Create your views here.
-@login_required(login_url='/account/login/')
+def home(request):
+    return redirect('login')
+@login_required(login_url='/accounts/login/')
 def profile(request):
     user = request.user
     customer = CustomerProfile.objects.filter(customer=user)
@@ -17,7 +20,7 @@ def profile(request):
     return render(request, 'profile.html', args)
 
 @csrf_exempt
-@login_required(login_url='/account/login/')
+@login_required(login_url='/accounts/login/')
 def order(request):
     if request.method == 'GET':
         user = request.user
