@@ -29,5 +29,6 @@ urlpatterns = [
     url('accounts/logout/',
          auth_views.LogoutView.as_view(template_name='logout.html'), name='logout'),
     url(r'^accounts/profile/$', profile, name='profile'),
-    url(r'^accounts/order/$', order, name='order')
+    url(r'^accounts/order/$', order, name='order'),
+    url(r'^accounts/order/successful/', successful, name='successful')
 ]

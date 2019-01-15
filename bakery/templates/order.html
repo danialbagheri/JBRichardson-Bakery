@@ -87,7 +87,9 @@
   <br />
   <div id="confirm"></div>
 </div>
-
+<br />
+<br />
+<br />
 <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script>
@@ -143,7 +145,7 @@
   // };
 
   // async data submission
-  const url = "/account/order/";
+  const url = "/accounts/order/";
 
   const submitOrder = async () => {
     let orderList = "";
@@ -180,6 +182,7 @@
         if (jsonResponse["status"] == "ok") {
           confirm.innerHTML =
             '<div class="alert alert-success" "role="alert" >Your order has been placed. Thank You. If you would like to make any amendments to your order please email orders@jbrichardson.co.uk</div>';
+          window.location.replace(jsonResponse["url"]);
         } else {
           console.log("something went wrong!");
         }

@@ -4,7 +4,7 @@ from django.db import models
 from django.db.models.signals import post_save
 import datetime
 from django.contrib.auth.models import User, Group
-
+import uuid
 
 class CustomerProfile(models.Model):
     customer = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -70,12 +70,14 @@ class Product(models.Model):
     def __str__(self):
         return "%s - %s - %s" % (self.item_code, self.product_name, self.price)
 
-
-# class Order (models.Model):
-#     customer = models.ForeignKey(User, on_delete=models.CASCADE)
-#     po_number = models.CharField(max_length=40)
-#     delivery_date = models.DateField(blank=False, default=datetime.date.today() + datetime.timedelta(days=1))
-#     product_id = models.ForeignKey(Product, on_delete=models.CASCADE)
-#     # payment_option = models.CharField(max_length=50)
-#     order_status = models.CharField(max_length=50, default="PLACED")
-#     quantity = models.IntegerField()
+def small_uuid():
+    number = uuid.uuid4()
+    return str(number)[:8]
+class Order (models.Model):
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    tracking_number = models.CharField(blank=True,max_length=8,unique=True, default=small_uuid())
+    po_number = models.CharField(blank=True,max_length=40)
+    delivery_date = models.DateField(blank=True,default=None)
+    order_detail = models.TextField(blank=True,default=None)
+    # order_status = models.CharField(max_length=50, default="PLACED")
+    extra_information = models.TextField(blank=True,default=None)

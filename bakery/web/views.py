@@ -1,7 +1,7 @@
 from django.shortcuts import render
 from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
-from web.models import CustomerProfile
+from web.models import CustomerProfile, Order
 from django.views.decorators.csrf import csrf_exempt
 import json
 from django.http import HttpResponse, JsonResponse
@@ -12,6 +12,7 @@ from django.shortcuts import redirect
 # Create your views here.
 def home(request):
     return redirect('login')
+    
 @login_required(login_url='/accounts/login/')
 def profile(request):
     user = request.user
@@ -33,8 +34,6 @@ def order(request):
     else:
         user = request.user
         data = json.loads(request.body)
-        print(data)
-        print(data['order'])
         subject = 'J B RICHARDSON ORDER'
         sender = "orders@jbrichardson.co.uk"
         customer_email = data['email']
@@ -48,17 +47,26 @@ def order(request):
         order_number = data['Order Number']
         delivery_date = data['Delivery Date']
         extra_info = data['Extra Info']
+        order_model = Order(customer=user,po_number=order_number,delivery_date=delivery_date,order_detail=formatted_order,extra_information=extra_info)
+        tracking_number=str(order_model.tracking_number)
+        order_model.save()
         message = """ 
-        J B RICHARDSON BAKERY \n
-        Thank you for placing your order with us. \n
-        Customer Name: {} \n
-        Your order:\n
-        {} \n \n
-        Order Purchase Number: {} \n
-        Delivery Date: {} \n
-        Extra information: \n
-        {}
+J B RICHARDSON BAKERY \n
+Thank you for placing your order with us. \n
+Customer Name: {} \n
+Your order:\n
+{} \n \n
+Order Purchase Number: {} \n
+Delivery Date: {} \n
+Extra information: \n
+{}
         """.format(user,formatted_order, order_number, delivery_date, extra_info)
         send_mail(subject, message, sender, recipient)
-        # return HttpResponse("Got json data")
-        return JsonResponse({'status':'ok'})
+        url = '/accounts/order/successful/?resp=%s'%tracking_number
+        return JsonResponse({'status':'ok','url': url})
+        # return redirect(url)
+
+def successful(request):
+    resp = request.GET.get('resp')
+    print(request.GET.get('resp'))
+    return render(request, 'successful_order.html',{'tracking':resp})
